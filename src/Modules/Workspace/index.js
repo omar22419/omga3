@@ -1,0 +1,1 @@
+export {default as workspaceRouter} from './workspace.controller.js'
