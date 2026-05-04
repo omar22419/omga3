@@ -1,8 +1,8 @@
 import { NODE_ENV } from "../../../config/config.service.js"
 
-export const ErrorResponse =({message="Error",status=400,extra=undefined}={})=>{
-    throw new Error(message,{cause:{status,extra}})
-}
+export const ErrorResponse = ({ message = "Error", status = 400, extra = undefined } = {}) => {
+    throw new Error(message, { cause: { status, extra } });
+};
 
 export const BadRequestException=({message="BadRequestException",extra = undefined}={})=>{
     return ErrorResponse({message,status:400,extra})

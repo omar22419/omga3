@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-const activityLogSchema = new mongoose.Schema({
+const activityLogSchema = new Schema({
     user:{
         type:Schema.Types.ObjectId,
         ref:"User",

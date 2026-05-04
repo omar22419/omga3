@@ -1,7 +1,7 @@
 import {z} from 'zod';
 
 export const registerSchema = z.object({
-    name:z.string().min(3,"Name is required"),
+    username:z.string().min(3,"user name is required"),
     email:z.string().email("Email is invalid"),
     password:z.string().min(8,"Password must be at least 8 characters long").regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
     phone:z.string().min(10,"Phone number is required").regex(/^(02|2|\+2)?01[0-25]\d{8}$/),
@@ -13,18 +13,24 @@ export const loginSchema = z.object({
 });
 
 export const verifyEmailSchema = z.object({
-    token:z.string().min(1,"Token is required"),
+    email:z.string().email("Email is invalid"),
+    otp: z.string().length(6, "OTP must be exactly 6 characters").regex(/^[0-9]+$/, "OTP must only contain numbers")
 })
-
-export const resetPasswordSchema = z.object({
-    token:z.string().min(1,"Token is required"),
-    newPassword:z.string().min(8,"Password must be at least 8 characters long"),
-    confirmPassword:z.string().min(1,"confirm password is required")
-});
 
 export const emailSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
+
+export const resetPasswordSchema = z.object({
+    email:z.string().email("Email is invalid"),
+    otp: z.string().length(6, "OTP must be exactly 6 characters").regex(/^[0-9]+$/, "OTP must only contain numbers"),
+    newPassword:z.string().min(8,"Password must be at least 8 characters long"),
+});
+
+export const verifyForgotPasswordCodeSchema = z.object({
+  email:z.string().email("Email is invalid"),
+  otp: z.string().length(6, "OTP must be exactly 6 characters").regex(/^[0-9]+$/, "OTP must only contain numbers"),
+})
 
 export const inviteMemberSchema = z.object({
   email: z.string().email("Invalid email address"),

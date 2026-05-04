@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import { Schema } from "mongoose";
 
-const taskSchema = new mongoose.Schema({
+const taskSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -97,4 +98,4 @@ const taskSchema = new mongoose.Schema({
 });
 
 
-export const task = mongoose.models.Task || mongoose.model("Task", taskSchema);
+export const Task = mongoose.models.Task || mongoose.model("Task", taskSchema);
