@@ -31,11 +31,7 @@ export const findById = async ({
   return await query;
 };
 
-export const create = async ({
-  model,
-  data = {},
-  select = "",
-} = {}) => {
+export const create = async ({ model, data = {}, select = "" } = {}) => {
   return await model.create(data);
 };
 
@@ -110,16 +106,24 @@ export const findAll = async ({
   model,
   filter = {},
   select = "",
+  sort = {},
   options = {},
 } = {}) => {
-  const doc = await model.find(filter).select(select);
+  let query = model.find(filter).select(select);
+
   if (options.populate) {
-    doc.populate(options.populate);
+    query = query.populate(options.populate);
   }
+
+  if (sort && Object.keys(sort).length > 0) {
+    query = query.sort(sort);
+  }
+
   if (options.lean) {
-    doc.lean();
+    query = query.lean();
   }
-  return await doc.exec();
+
+  return await query.exec();
 };
 
 export const count = async ({

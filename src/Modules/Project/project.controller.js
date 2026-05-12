@@ -5,7 +5,7 @@ import { validateRequest } from 'zod-express-middleware';
 import { projectSchema } from '../../Middleware/validation.middleware.js';
 import { successResponse } from '../../Common/index.js';
 import z from 'zod';
-import { getProjectDetails, getProjectTasks } from './project.service.js';
+import { createProject, getProjectDetails, getProjectTasks } from './project.service.js';
 
 const router = Router();
 

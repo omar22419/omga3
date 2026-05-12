@@ -14,15 +14,17 @@ export const createProject = async(req)=>{
         id:workspaceId
     })
 
+    console.log("workspace members:", workspace.members);
+console.log("req.user._id:", req.user._id);
+
     if(!workspace){
         throw NotFoundException({
             message:"Workspace not found"
         })
     }
-    const isMember = workspace.members.some((member)=>{
-        member.user.toString()===req.user._id.toString()
-    })
-
+    const isMember = workspace.members.some((member) => {
+    return member.user.toString() === req.user._id.toString();
+    });
     if(!isMember){
         throw ForbiddenException({
             message:"You are not a member of this workspace"

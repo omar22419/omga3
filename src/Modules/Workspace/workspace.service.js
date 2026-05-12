@@ -10,6 +10,7 @@ import {
   createOne,
   deleteOne,
   find,
+  findAll,
   findById,
   findOne,
 } from "../../DB/database.repository.js";
@@ -280,6 +281,7 @@ export const getWorkspaceProjects = async ({ workspaceId }, userId) => {
   populate: [{ path: "tasks", select: "status" }],
   sort: { createdAt: -1 },
 });
+console.log(projects);
   return {projects, workspace}
 };
 
@@ -296,9 +298,8 @@ export const getWorkspaceStats = async({workspaceId},userId)=>{
   }
 
   const isMember = workspace.members.some((member)=>{
-    member.user.toString()===userId.toString()
+    return member.user.toString() === userId.toString()
   })
-
   if(!isMember){
     throw UnauthorizedException({
       message:"You are not a member of this workspace"

@@ -30,8 +30,8 @@ router.post(
 
 router.post(
   "/login",
-
-  validateRequest({ body: loginSchema }),
+  
+  // validateRequest({ body: loginSchema }),
   asyncHandler(async (req, res, next) => {
     const data = await loginUser(req);
     return successResponse({
@@ -65,10 +65,6 @@ router.patch("/resend-confirm-email", validateRequest({body:emailSchema}),asyncH
     message:"Email Sent Successfully"
   })
 }))
-
-
-
-
 
 
 router.post("/reset-password",validateRequest({body:emailSchema}), asyncHandler(async(req,res,next)=>{

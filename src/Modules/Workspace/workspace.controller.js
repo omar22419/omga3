@@ -111,8 +111,10 @@ router.get("/:workspaceId/projects",authMiddleware,asyncHandler(async(req,res,ne
       data:result
     })
 }))
+
+
 router.get("/:workspaceId/stats",authMiddleware,asyncHandler(async(req,res,next)=>{
-    const result  = await getWorkspaceStats(req.params,req.user._id)
+  const result  = await getWorkspaceStats(req.params,req.user._id)
     successResponse({
       res,
       data:result
