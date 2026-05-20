@@ -175,7 +175,7 @@ export const acceptInviteByToken = async ({ token }) => {
   }
   const invite = await findOne({
     model: WorkspaceInvite,
-    options: {
+    filter: {
       user,
       workspaceId,
     },
@@ -219,11 +219,9 @@ export const acceptInviteByToken = async ({ token }) => {
     }
   }
   await Promise.all([
-    deleteOne({
+    await deleteOne({
       model: WorkspaceInvite,
-      options: {
-        _id: invite._id,
-      },
+      filter: { _id: invite._id },
     }),
     recordActivity(user, "joined_workspace", "Workspace", workspaceId, {
       description: `Joined ${workspace.name} workspace`,

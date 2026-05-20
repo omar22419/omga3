@@ -16,6 +16,8 @@ import {
   getTaskById,
   updateSubTask,
   updateTaskDescription,
+  updateTaskPriority,
+  updateTaskStatus,
   updateTaskTitle,
   watchTask,
 } from "./task.service.js";
@@ -221,7 +223,7 @@ router.post(
       req.user._id,
     );
     successResponse({
-      data:result,
+      data: result,
       status: 201,
       res,
     });

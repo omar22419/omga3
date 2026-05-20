@@ -60,11 +60,20 @@ export const createTask = async (req) => {
 export const getMyTasks = async (userId) => {
   const tasks = await findAll({
     model: Task,
-    filter: { assignees: { $in: [userId] } },
-    select: "title status createdAt",
+    filter: {
+      assignees: { $in: [userId] },
+    },
+
+    select:
+      "title description status priority dueDate isAchieved updatedAt createdAt",
+
     sort: { createdAt: -1 },
+
     options: {
-      populate: { path: "project", select: "title workspace" },
+      populate: {
+        path: "project",
+        select: "title workspace",
+      },
     },
   });
 
@@ -127,7 +136,7 @@ export const updateTaskTitle = async (taskId, title, userId) => {
   const oldTitle = task.title;
   task.title = title;
   await task.save();
-  await recordActivity(userId, "update_task", "Task", taskId, {
+  await recordActivity(userId, "updated_task", "Task", taskId, {
     description: `updated task title from ${oldTitle} to ${title}`,
   });
   return task;

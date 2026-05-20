@@ -43,7 +43,10 @@ export const createProject = async (req) => {
       dueDate,
       tags: tagArray,
       workspace: workspaceId,
-      members,
+      members: [
+        { user: req.user._id, role: "manager" }, // 👈 ضيف الـ creator
+        ...(members || []),
+      ],
       createdBy: req.user._id,
     },
   });
@@ -70,7 +73,7 @@ export const getProjectDetails = async ({ projectId }, userId) => {
   }
 
   const isMember = project.members.some((member) => {
-    member.user._id.toString() === userId.toString();
+    return member.user._id.toString() === userId.toString();
   });
 
   if (!isMember) {
@@ -100,13 +103,29 @@ export const getProjectTasks = async ({ projectId }, userId) => {
     });
   }
 
-  const isMember = project.members.some((member) => {
-    return member.user._id.toString() === userId.toString();
+  // Check workspace membership
+  const workspace = await findById({
+    model: Workspace,
+    id: project.workspace,
   });
 
-  if (!isMember) {
+  if (!workspace) {
+    throw NotFoundException({
+      message: "Workspace not found",
+    });
+  }
+
+  const isWorkspaceMember = workspace.members.some(
+    (member) => member.user.toString() === userId.toString(),
+  );
+
+  const isProjectMember = project.members.some(
+    (member) => member.user._id.toString() === userId.toString(),
+  );
+
+  if (!isWorkspaceMember && !isProjectMember) {
     throw UnauthorizedException({
-      message: "You are not a member of this project",
+      message: "You are not authorized to access this project",
     });
   }
 
@@ -124,5 +143,6 @@ export const getProjectTasks = async ({ projectId }, userId) => {
     ],
     sort: { createdAt: -1 },
   });
+
   return { project, tasks };
 };
