@@ -27,7 +27,7 @@ const bootstrap = async (req,res) => {
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
-    methods: ["GET", "POST", "DELETE", "PUT"],
+    methods: ["GET", "POST", "DELETE", "PUT","PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );

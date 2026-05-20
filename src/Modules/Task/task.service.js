@@ -8,6 +8,8 @@ import {
 import { Workspace } from "./../../DB/Models/workspace.model.js";
 import { Task } from "../../DB/Models/task.model.js";
 import { recordActivity } from "../../Middleware/recordActivity.js";
+import { Comment } from './../../DB/Models/comment.model.js';
+import { ActivityLog } from "../../DB/Models/activity.model.js";
 
 export const createTask = async (req) => {
   const { projectId } = req.params;
@@ -26,8 +28,8 @@ export const createTask = async (req) => {
     model: Workspace,
     id: project.workspace,
   });
-  const isMember = workspace.member.some(
-    (member) => member.user.toString() === req.user._id.toString(),
+  const isMember = workspace.members.some(
+    (member) =>{ return member.user.toString() === req.user._id.toString()},
   );
 
   if (!isMember) {
@@ -58,7 +60,7 @@ export const createTask = async (req) => {
 export const getMyTasks = async (userId) => {
   const tasks = await findAll({
     model: Task,
-    filter: { assignees: { $in: [req.user._id] } },
+    filter: { assignees: { $in: [userId] } },
     select: "title status createdAt",
     sort: { createdAt: -1 },
     options: {
@@ -74,8 +76,8 @@ export const getTaskById = async (taskId) => {
     model: Task,
     id: taskId,
     populate: [
-      { path: "assignees", select: "name profilePicture" },
-      { path: "watchers", select: "name profilePicture" },
+      { path: "assignees", select: "username firstName lastName profilePicture" },
+      { path: "watchers", select: "username firstName lastName profilePicture" },
     ],
   });
 
@@ -88,7 +90,7 @@ export const getTaskById = async (taskId) => {
   const project = await findById({
     model: Project,
     id: task.project,
-    populate: [{ path: "members.user", select: "name profilePicture" }],
+    populate: [{ path: "members.user", select: "username firstName lastName profilePicture" }],
   });
 
   return { task, project };
@@ -160,7 +162,7 @@ export const updateTaskDescription = async (taskId, description, userId) => {
     });
   }
   const oldDescription =
-    task.substring(0, 60) + (task.description.length > 60 ? "..." : "");
+    task.description.substring(0, 60) + (task.description.length > 60 ? "..." : "");
   const newDescription =
     description.substring(0, 60) + (description.length > 60 ? "..." : "");
 
@@ -361,6 +363,7 @@ export const addComment = async (taskId, text, userId) => {
   const newComment = await create({
     model: Comment,
     data: {
+      text,
       task: taskId,
       author: userId,
     },
@@ -383,7 +386,7 @@ export const getCommentsByTaskId = async (taskId) => {
     filter: { task: taskId },
     sort: { createdAt: -1 },
     options: {
-      populate: [{ path: "author", select: "name profilePicture" }],
+      populate: [{ path: "author", select: "username firstName lastName profilePicture" }],
     },
   });
 
@@ -391,7 +394,7 @@ export const getCommentsByTaskId = async (taskId) => {
 };
 
 export const watchTask = async (taskId, userId) => {
-  const task = findById({
+  const task = await findById({
     model: Task,
     id: taskId,
   });
@@ -402,8 +405,13 @@ export const watchTask = async (taskId, userId) => {
     });
   }
 
+  const project = await findById({
+    model: Project,
+    id: task.project,
+  });
+
   if (!project) {
-    NotFoundException({
+    throw NotFoundException({
       message: "Project not found",
     });
   }
@@ -417,23 +425,18 @@ export const watchTask = async (taskId, userId) => {
       message: "You are not a member of this project",
     });
   }
+
   const isWatching = task.watchers.includes(userId);
 
   if (!isWatching) {
     task.watchers.push(userId);
   } else {
-    task.watchers = task.watcher.filter((watcher) => {
+    task.watchers = task.watchers.filter((watcher) => {
       return watcher.toString() !== userId.toString();
     });
   }
 
   await task.save();
-
-  await recordActivity(userId, "updated_task", "Task", taskId, {
-    description: `${
-      isWatching ? "stopped watching" : "started watching"
-    } task ${task.title}`,
-  });
 
   return task;
 };
@@ -471,7 +474,6 @@ export const achievedTask = async (taskId, userId) => {
   }
 
   const isAchieved = task.isAchieved;
-
   task.isAchieved = !isAchieved;
   await task.save();
 
@@ -488,7 +490,7 @@ export const getActivityByResourceId = async (resourceId) => {
     filter: { resourceId },
     sort: { createdAt: -1 },
     options: {
-      populate: [{ path: "user", select: "name profilePicture" }],
+      populate: [{ path: "user", select: "username firstName lastName profilePicture" }],
     },
   });
 
@@ -517,4 +519,5 @@ export const updateSubTask = async(taskId, subTaskId,completed,userId)=>{
     await recordActivity(userId, "updated_subtask", "Task", taskId, {
       description: `updated subtask ${subTask.title}`,
     });
+    return task
 }

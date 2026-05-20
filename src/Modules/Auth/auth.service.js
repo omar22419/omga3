@@ -373,7 +373,6 @@ export const resetForgotPasswordCode = async (inputs) => {
       password: await generateHash(newPassword),
     },
   });
-  console.log(user);
 
   if (!user) {
     throw NotFoundException({ message: "Fail to find account" });
