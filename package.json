@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
+  "engines": {
+    "node":"v25.1.0"
+  },
   "scripts": {
     "start:dev": "cross-env NODE_ENV=development node --watch-path=. ./src/index.js",
     "start:prod": "cross-env NODE_ENV=production node --watch-path=. ./src/index.js"

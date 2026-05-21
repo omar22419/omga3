@@ -38,6 +38,11 @@ app.use(
   await connectDB();
   await connectRedis();
 
+  app.get("/", (req,res)=>{
+    return res.json({message:"Welcome to OMEGA3 server side APIS"})
+  })
+
+
   app.use("/auth", authRouter);
   app.use("/project", projectRouter);
   app.use("/task", taskRouter);
