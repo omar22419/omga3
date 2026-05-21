@@ -15,7 +15,11 @@ import {
   successResponse,
 } from "../../Common/index.js";
 import aj from "../../Common/services/arcjet.js";
-import { createOne, findOne, findOneAndUpdate } from "../../DB/database.repository.js";
+import {
+  createOne,
+  findOne,
+  findOneAndUpdate,
+} from "../../DB/database.repository.js";
 import jwt from "jsonwebtoken";
 import {
   deleteKey,
@@ -205,23 +209,22 @@ export const loginUser = async (req) => {
   }
 
   const isPasswordCorrect = await compareHash(password, user.password);
-  if(!isPasswordCorrect){
-    throw BadRequestException({message:"Invalid Credentials"})
+  if (!isPasswordCorrect) {
+    throw BadRequestException({ message: "Invalid Credentials" });
   }
-const token = jwt.sign(
-      { userId: user._id, purpose: "login" },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-    
-    user.lastLogin = new Date();
-    await user.save();
+  const token = jwt.sign(
+    { userId: user._id, purpose: "login" },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" },
+  );
 
-    const userData = user.toObject();
-    delete userData.password;
+  user.lastLogin = new Date();
+  await user.save();
 
+  const userData = user.toObject();
+  delete userData.password;
 
-    return {userData,token};
+  return { userData, token };
 };
 
 export const reSendConfirmEmail = async (inputs) => {

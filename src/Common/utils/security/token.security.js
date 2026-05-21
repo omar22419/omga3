@@ -7,9 +7,12 @@ import {
   User_REFRESH_TOKEN_SECRET_KEY,
   User_TOKEN_SECRET_KEY,
 } from "../../../../config/config.service.js";
-import { audienceEnum, tokenTypeEnum } from "../../Enums/security.enum.js";
+import { audienceEnum, tokenTypeEnum } from "../../enums/security.enum.js";
 import { findOne } from "./../../../DB/database.repository.js";
-import { BadRequestException, UnauthorizedException } from "../../response/error.response.js";
+import {
+  BadRequestException,
+  UnauthorizedException,
+} from "../../response/error.response.js";
 import { User } from "../../../DB/Models/user.model.js";
 import { RoleEnum } from "../../enums/user.enum.js";
 export const generateToken = async ({
@@ -47,7 +50,7 @@ export const getTokenSignature = async (role) => {
 };
 
 export const getSignatureLevel = async (audienceType) => {
-  let signatureLevel = audeienceEnum.User;
+  let signatureLevel = audienceEnum.User;
   switch (audienceType) {
     case audienceEnum.System:
       signatureLevel = RoleEnum.Admin;

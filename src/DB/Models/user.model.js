@@ -1,7 +1,8 @@
-import mongoose ,{ Schema } from 'mongoose';
-import { GenderEnum, ProviderEnum } from '../../Common/enums/user.enum.js';
+import mongoose, { Schema } from "mongoose";
+import { GenderEnum, ProviderEnum } from "../../Common/enums/user.enum.js";
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     firstName: {
       type: String,
       required: true,
@@ -14,47 +15,47 @@ const userSchema = new Schema({
       minLength: 3,
       maxLength: 25,
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true,
-        trim:true,
-        lowercase:true,
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
     },
-    password:{
-        type:String,
-        required:function(){
-            return this.provider !== "google"
-        }
+    password: {
+      type: String,
+      required: function () {
+        return this.provider !== "google";
+      },
     },
-    phone:{
-        type:String,
-        required:true
+    phone: {
+      type: String,
+      required: true,
     },
-    profilePicture:{
-        type:String,
+    profilePicture: {
+      type: String,
     },
     confirmEmail: {
-      type:Date
+      type: Date,
     },
-    lastLogin:{
-        type:Date
+    lastLogin: {
+      type: Date,
     },
-    isEmailVerified:{
-      type:Boolean,
-      default:false
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
     },
-    is2FAEnabled:{
-        type:Boolean,
-        default:false
+    is2FAEnabled: {
+      type: Boolean,
+      default: false,
     },
-    twoFAOtp:{
-        type:String,
-        select:false
+    twoFAOtp: {
+      type: String,
+      select: false,
     },
-    twoFAOtpExpires:{
-        type:Date,
-        select:false
+    twoFAOtpExpires: {
+      type: Date,
+      select: false,
     },
     provider: {
       type: Number,
@@ -66,12 +67,13 @@ const userSchema = new Schema({
       enum: Object.values(GenderEnum),
       default: GenderEnum.Male,
     },
-},{
-    timestamps:true,
+  },
+  {
+    timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-})
-
+  },
+);
 
 userSchema
   .virtual("username")
@@ -83,5 +85,4 @@ userSchema
     return this.firstName + " " + this.lastName;
   });
 
-
-export const User  = mongoose.models.User || mongoose.model('User',userSchema);
+export const User = mongoose.models.User || mongoose.model("User", userSchema);
