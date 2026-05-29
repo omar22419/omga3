@@ -38,49 +38,6 @@ import { User } from "./../../DB/Models/user.model.js";
 import { ProviderEnum } from "../../Common/enums/user.enum.js";
 
 export const registerUser = async (inputs) => {
-  // const {email, password, username ,phone} =inputs;
-  // // const decision = await aj.protect(inputs,{email});
-  // // // console.log(decision);
-  // // console.log("Arcjet decision", decision.isDenied());
-  // // if(!decision.isDenied()){
-  // //     throw ForbiddenException({message:"Email is not allowed"})
-  // // }
-  // const existingUser = await findOne({
-  //     model:User,
-  //     filter:{email}
-  // })
-  // if(existingUser){
-  //     throw ConflictException({message:"Email already exists"})
-  // }
-  // const salt = await bcrypt.genSalt(10);
-  // const hashPassword = await bcrypt.hash(password, salt);
-  // const newUser = await createOne({
-  //     model:User,
-  //     data:{
-  //         email,
-  //         password:hashPassword,
-  //         username,
-  //         phone: await encrypt(phone),
-  //     }
-  // })
-  // const verificationToken = jwt.sign({userId: newUser[0]._id},JWT_SECRET,{expiresIn:'1h'});
-  // const verificationLink = `${FRONTEND_URL}/verify/${verificationToken}`
-  // const isEmailSent = await sendEmail({to:email,subject:"Email Verification",html:emailTemplate({code:verificationLink,title:"Email Verification"})});
-
-  // await createOne({
-  //     model:Verification,
-  //     data:{
-  //         userId: newUser[0]._id,
-  //         token: verificationToken,
-  //         expiresAt: new Date(Date.now()+ 1 * 60*60*1000),
-  //     }
-  // })
-
-  // if(!isEmailSent){
-  //     throw BadRequestException({message:"Email could not be sent"})
-  // };
-  // return newUser;
-
   const { username, email, password, phone } = inputs;
   const userCheck = await findOne({
     model: User,
@@ -115,7 +72,6 @@ const generateAndSendConfirmEmail = async ({ email }) => {
     });
   }
   const maxTrialCount = otpMaxRequestKey(email);
-  console.log(maxTrialCount);
   const checkMaxOtpRequest = Number((await get(maxTrialCount)) || 0);
   if (checkMaxOtpRequest >= 5) {
     await set({
@@ -171,7 +127,6 @@ export const verifyEmail = async ({ email, otp } = {}) => {
     });
   }
   const isValidOtp = await compareHash(otp, confirmOtp);
-  console.log(isValidOtp);
   if (!isValidOtp) {
     throw BadRequestException({ message: "Invalid OTP code" });
   }
@@ -352,7 +307,6 @@ export const verifyForgotPasswordCode = async (inputs) => {
   }
 
   const isValidOtp = await compareHash(otp, hashOtp);
-  console.log(isValidOtp);
   if (!isValidOtp) {
     throw BadRequestException({ message: "Invalid OTP code" });
   }

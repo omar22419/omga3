@@ -283,7 +283,6 @@ router.put(
     body: z.object({ completed: z.boolean() }),
   }),
   asyncHandler(async (req, res, next) => {
-    console.log(req.body);
     const result = await updateSubTask(
       req.params.taskId,
       req.params.subTaskId,
