@@ -14,7 +14,6 @@ import {
   sendEmail,
   successResponse,
 } from "../../Common/index.js";
-import aj from "../../Common/services/arcjet.js";
 import {
   createOne,
   findOne,

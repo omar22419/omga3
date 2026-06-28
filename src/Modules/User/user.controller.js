@@ -2,7 +2,8 @@ import { Router } from "express";
 import { asyncHandler } from "./../../Middleware/asyncHandler.middleware.js";
 import { authMiddleware } from "../../Middleware/auth.middleware.js";
 import { successResponse } from "../../Common/index.js";
-import { changePassword, getUserProfile, updateUserProfile } from "./user.service.js";
+import { changePassword, getUserProfile, updateUserProfile, uploadProfilePicture } from "./user.service.js";
+import { uploadAvatar } from "../../Middleware/upload.middleware.js";
 
 const router = Router();
 
@@ -25,6 +26,21 @@ router.patch(
     const result = await updateUserProfile(req.body, req.user._id);
     successResponse({
       res,
+      data: result,
+    });
+  }),
+);
+
+
+router.post(
+  "/profile/avatar",
+  authMiddleware,
+  uploadAvatar,
+  asyncHandler(async (req, res, next) => {
+    const result = await uploadProfilePicture(req.file, req.user._id);
+    successResponse({
+      res,
+      message: "Profile picture updated successfully",
       data: result,
     });
   }),

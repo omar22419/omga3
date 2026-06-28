@@ -44,6 +44,10 @@ export const OTP_EXPIRES_IN_MINUTES = parseInt(process.env.OTP_EXPIRES_IN_MINUTE
 
 
 export const SALT_ROUND = parseInt(process.env.SALT_ROUND ?? '10')
-console.log({SALT_ROUND});
 
 export const REDIS_URI = process.env.REDIS_URI
+
+
+export const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+export const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY;
+export const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
