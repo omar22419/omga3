@@ -15,6 +15,7 @@ import {
   getMyTasks,
   getTaskById,
   updateSubTask,
+  updateTaskAssignees,
   updateTaskDescription,
   updateTaskPriority,
   updateTaskStatus,
@@ -185,7 +186,7 @@ router.post(
       req.user._id,
     );
     successResponse({
-      result,
+      data:result,
       status: 201,
       res,
     });
